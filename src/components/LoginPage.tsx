@@ -54,6 +54,7 @@ export function LoginPage({ onToast }: LoginPageProps) {
         onToast(errorMessage, 'error');
       }
     } catch (error) {
+      console.error('Erro ao realizar login:', error);
       onToast('Erro de conexão. Tente novamente.', 'error');
     } finally {
       setLoading(false);

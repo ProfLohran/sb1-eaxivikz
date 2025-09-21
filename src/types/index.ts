@@ -50,9 +50,13 @@ export type InformacoesSuccess = {
   informacoes: InformacoesEvento;
 };
 
-export type LoadDataSuccess = { 
-  success: true; 
-  data: Record<string, any>[] 
+export type AvaliacaoFieldValue = string | number | boolean | null | undefined;
+
+export type AvaliacaoData = Record<string, AvaliacaoFieldValue>;
+
+export type LoadDataSuccess = {
+  success: true;
+  data: AvaliacaoData[];
 };
 
 export type EvaluationSheet = {
@@ -72,4 +76,3 @@ export type User = {
   categoria: string;
 };
 
-export type AvaliacaoData = Record<string, any>;
