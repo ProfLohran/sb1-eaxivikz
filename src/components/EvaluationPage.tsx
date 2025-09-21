@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ArrowLeft, Save, Star, Layers } from 'lucide-react';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
@@ -24,16 +24,12 @@ export function EvaluationPage({ grupo, sheetName, onBack, onToast }: Evaluation
   const [errors, setErrors] = useState<Record<string, string>>({});
 
 
-  useEffect(() => {
-    loadRubricas();
-  }, []);
-
-  const loadRubricas = async () => {
+  const loadRubricas = useCallback(async () => {
     if (!user) return;
 
     try {
       const response = await apiService.getRubricas(user.categoria);
-      
+
       if (response.success) {
         setRubricas(response.rubricas);
         // Inicializar notas com valores existentes ou 0
@@ -48,11 +44,16 @@ export function EvaluationPage({ grupo, sheetName, onBack, onToast }: Evaluation
         onToast('Erro ao carregar rubricas: ' + response.error, 'error');
       }
     } catch (error) {
+      console.error('Erro ao carregar rubricas:', error);
       onToast('Erro de conexão ao carregar rubricas', 'error');
     } finally {
       setLoading(false);
     }
-  };
+  }, [grupo, onToast, user]);
+
+  useEffect(() => {
+    void loadRubricas();
+  }, [loadRubricas]);
 
   const handleNotaChange = (notaKey: string, valor: string) => {
     const numericValue = Math.max(0, Math.min(5, parseInt(valor) || 0));
@@ -117,6 +118,7 @@ export function EvaluationPage({ grupo, sheetName, onBack, onToast }: Evaluation
         onToast('Erro ao salvar avaliação: ' + response.error, 'error');
       }
     } catch (error) {
+      console.error('Erro ao salvar avaliação:', error);
       onToast('Erro de conexão ao salvar avaliação', 'error');
     } finally {
       setSaving(false);
